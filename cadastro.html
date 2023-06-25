@@ -10,46 +10,52 @@
     <header class="menu">
       <h3 class="titleMenu">Tecnologia web</h3>
     </header>
-    <div class="inicio">
-      <h1 class="titleInicio">Projeto Tecnologia Web</h1>
-      <button class="button"><a class="botao" href="#cadastro">Cadastrar produto</a></button>
-      <h3 class="duplaInicio">Dupla:</h3>
-      <h3 class="nomesInicio"> - Alessandro Martins Torres
-        <br> - Matheus Matos Rodrigues
-      </h3>
     
-    </div>
+    <section>
+      <div class="inicio">
+        <h1 class="titleInicio">Projeto Tecnologia Web</h1>
+        <button class="button"><a class="botao" href="#cadastro">Cadastrar produto</a></button>
+        <h3 class="duplaInicio">Dupla:</h3>
+        <h3 class="nomesInicio"> - Alessandro Martins Torres
+          <br> - Matheus Matos Rodrigues
+        </h3>
+      </div>
+    </section>
+
     <div class="separador"></div>
-    <h1 class="titleCadastro" id="cadastro">Cadastro de Produtos</h1>
-    <form id="cadastroForm" class="formCadastro">
-      <label for="codigo">Código Produto:</label>
-      <input type="number" id="codigo"><br>
 
-      <label for="nome">* Nome Produto:</label>
-      <input type="text" id="nome" required><br>
-      
-      <label for="unidade">* Unidade:</label>
-      <select id="unidade" required>
-        <option value="un">Unidade</option>
-        <option value="kg">Quilograma</option>
-        <option value="lt">Litro</option>
-        <option value="mt">Metro</option>
-        <option value="pc">Pacote</option>
-      </select><br>
+    <section>
+      <h1 class="titleCadastro" id="cadastro">Cadastro de Produtos</h1>
+      <form id="cadastroForm" class="formCadastro">
+        <label for="codigo">Código Produto:</label>
+        <input type="number" id="codigo"><br>
 
-      <label for="quantidade">* Quantidade:</label>
-      <input type="number" id="quantidade" required><br>
+        <label for="nome">* Nome Produto:</label>
+        <input type="text" id="nome" required><br>
+        
+        <label for="unidade">* Unidade:</label>
+        <select id="unidade" required>
+          <option value="un">Unidade</option>
+          <option value="kg">Quilograma</option>
+          <option value="lt">Litro</option>
+          <option value="mt">Metro</option>
+          <option value="pc">Pacote</option>
+        </select><br>
 
-      <label for="codigoBarra">Código de Barra:</label>
-      <input type="text" id="codigoBarra" pattern="[0-9]{13}"><br>
+        <label for="quantidade">* Quantidade:</label>
+        <input type="number" id="quantidade" required><br>
 
-      <label for="ativo">Ativo:</label>
-      <input type="checkbox" id="ativo" checked><br>
+        <label for="codigoBarra">Código de Barra:</label>
+        <input type="text" id="codigoBarra" pattern="[0-9]{13}"><br>
 
-      <input type="submit" value="Cadastrar" class="buttonCadastrar">
-      <input type="button" value="Limpar" onclick="limparFormulario()" class="buttonLimpar">
-      <a href="lista.html" class="irLista">Ir para a Lista</a>
-    </form>
+        <label for="ativo">Ativo:</label>
+        <input type="checkbox" id="ativo" checked><br>
+
+        <input type="submit" value="Cadastrar" class="buttonCadastrar">
+        <input type="button" value="Limpar" onclick="limparFormulario()" class="buttonLimpar">
+        <a href="lista.html" class="irLista">Ir para a Lista</a>
+      </form>
+    </section>
 
     <script src="cadastro.js"></script>
     <footer class="rodape">
