@@ -6,6 +6,10 @@ let listaCompras = JSON.parse(localStorage.getItem('listaCompras')) || [];
 
 // Função para atualizar a lista de compras no localStorage
 function atualizarListaCompras() {
+  listaCompras = listaProdutos.filter(produto => {
+    return produto.quantidadeComprada >= produto.quantidadeNecessaria || produto.coletado;
+  });
+
   localStorage.setItem('listaCompras', JSON.stringify(listaCompras));
 }
 
@@ -19,72 +23,173 @@ function renderizarTabela() {
     if (!produto.ativo) return;
 
     const tr = document.createElement('tr');
+    tr.setAttribute('data-codigo', produto.codigo);
 
-    const codigoTd = document.createElement('td');
-    codigoTd.textContent = produto.codigo;
+    const codigoTd = criarTd(produto.codigo);
     tr.appendChild(codigoTd);
 
-    const nomeTd = document.createElement('td');
-    nomeTd.textContent = produto.nome;
+    const nomeTd = criarTd(produto.nome);
     tr.appendChild(nomeTd);
 
-    const unidadeTd = document.createElement('td');
-    unidadeTd.textContent = produto.unidade;
+    const unidadeTd = criarTd(produto.unidade);
     tr.appendChild(unidadeTd);
 
-    const quantidadeNecessarioTd = document.createElement('td');
-    quantidadeNecessarioTd.textContent = produto.quantidade;
-    tr.appendChild(quantidadeNecessarioTd);
-
-    const quantidadeCadastradoTd = document.createElement('td');
-    quantidadeCadastradoTd.textContent = 0; // Quantidade cadastrada inicialmente é 0
-    tr.appendChild(quantidadeCadastradoTd);
-
-    const quantidadeCompradoTd = document.createElement('td');
-    quantidadeCompradoTd.textContent = 0; // Quantidade comprada inicialmente é 0
+    const quantidadeCompradoTd = criarTd(produto.quantidade);
     tr.appendChild(quantidadeCompradoTd);
 
-    const coletadoTd = document.createElement('td');
-    coletadoTd.textContent = '';
+    const quantidadeNecessarioTd = criarTd(2);
+    tr.appendChild(quantidadeNecessarioTd);
+
+    const coletadoTd = criarTd();
+    if (quantidadeCompradoTd.textContent >= quantidadeNecessarioTd.textContent) {
+      coletadoTd.textContent = 'Coletado';
+      tr.classList.add('strikethrough'); 
+    } else {
+      coletadoTd.textContent = 'Não Coletado';
+    }
     tr.appendChild(coletadoTd);
+
+    const editarTd = criarTd();
+    const editarButton = criarButton('Editar', editarProduto.bind(null, tr));
+    editarTd.appendChild(editarButton);
+    tr.appendChild(editarTd);
+
+    const salvarTd = criarTd();
+    const salvarButton = criarButton('Salvar', salvarProduto.bind(null, tr));
+    salvarTd.appendChild(salvarButton);
+    salvarTd.style.display = 'none'; // Oculta o botão "Salvar" inicialmente
+    tr.appendChild(salvarTd);
+
+    const excluirTd = criarTd();
+    const excluirButton = criarButton('Excluir', excluirProduto.bind(null, produto, tr));
+    excluirTd.appendChild(excluirButton);
+    tr.appendChild(excluirTd);
 
     tableBody.appendChild(tr);
   });
 }
 
-// Função para marcar um produto como coletado
-function marcarComoColetado(event) {
-  const checkbox = event.target;
-  const tr = checkbox.closest('tr');
-  const codigo = parseInt(tr.querySelector('td:first-child').textContent);
-  const quantidadeNecessario = parseInt(tr.querySelector('td:nth-child(4)').textContent);
-  const quantidadeCompradoTd = tr.querySelector('td:nth-child(6)');
+// Função auxiliar para criar uma célula da tabela (td)
+function criarTd(textContent) {
+  const td = document.createElement('td');
+  td.textContent = textContent || '';
+  return td;
+}
 
-  if (checkbox.checked) {
-    // Marcar como coletado
-    tr.classList.add('strikethrough');
-    quantidadeCompradoTd.textContent = quantidadeNecessario;
-  } else {
-    // Desmarcar como coletado
-    tr.classList.remove('strikethrough');
-    quantidadeCompradoTd.textContent = 0;
+// Função auxiliar para criar um botão
+function criarButton(text, onClick) {
+  const button = document.createElement('button');
+  button.textContent = text;
+  button.addEventListener('click', onClick);
+  button.style.backgroundColor = '#6135fd'; // Definir cor do botão
+  button.style.fontSize = '15px'; // Aumentar o tamanho do botão
+  button.style.color = 'white';
+  button.style.padding = '5px 7px 5px 10px';
+  return button;
+}
+
+// Função para editar um produto
+function editarProduto(tr) {
+  const editarTd = tr.querySelector('td:nth-last-child(3)');
+  const salvarTd = tr.querySelector('td:nth-last-child(2)');
+  const excluirTd = tr.querySelector('td:last-child');
+
+  const nomeTd = tr.querySelector('td:nth-child(2)');
+  const unidadeTd = tr.querySelector('td:nth-child(3)');
+  const quantidadeNecessarioTd = tr.querySelector('td:nth-child(4)');
+
+  const nomeInput = criarInput(nomeTd.textContent);
+  nomeInput.style.width = nomeTd.clientWidth + 'px'; // Define a largura do input igual à largura da célula
+
+  const unidadeInput = criarInput(unidadeTd.textContent);
+  unidadeInput.style.width = unidadeTd.clientWidth + 'px'; // Define a largura do input igual à largura da célula
+
+  const quantidadeNecessarioInput = criarInput(quantidadeNecessarioTd.textContent);
+  quantidadeNecessarioInput.style.width = quantidadeNecessarioTd.clientWidth + 'px'; // Define a largura do input igual à largura da célula
+
+  nomeTd.textContent = '';
+  nomeTd.appendChild(nomeInput);
+
+  unidadeTd.textContent = '';
+  unidadeTd.appendChild(unidadeInput);
+
+  quantidadeNecessarioTd.textContent = '';
+  quantidadeNecessarioTd.appendChild(quantidadeNecessarioInput);
+
+  editarTd.style.display = 'none';
+  salvarTd.style.display = '';
+  excluirTd.style.display = 'none';
+}
+
+// Função para salvar as alterações de um produto
+function salvarProduto(tr) {
+  const editarTd = tr.querySelector('td:nth-last-child(3)');
+  const salvarTd = tr.querySelector('td:nth-last-child(2)');
+  const excluirTd = tr.querySelector('td:last-child');
+
+  const nomeTd = tr.querySelector('td:nth-child(2)');
+  const unidadeTd = tr.querySelector('td:nth-child(3)');
+  const quantidadeNecessarioTd = tr.querySelector('td:nth-child(4)');
+
+  const codigo = parseInt(tr.getAttribute('data-codigo'));
+  const nomeInput = nomeTd.querySelector('input');
+  const unidadeInput = unidadeTd.querySelector('input');
+  const quantidadeNecessarioInput = quantidadeNecessarioTd.querySelector('input');
+
+  const nome = nomeInput.value;
+  const unidade = unidadeInput.value;
+  const quantidadeNecessario = parseInt(quantidadeNecessarioInput.value);
+
+  const produtoIndex = listaProdutos.findIndex(p => p.codigo === codigo);
+  if (produtoIndex !== -1) {
+    listaProdutos[produtoIndex].nome = nome;
+    listaProdutos[produtoIndex].unidade = unidade;
+    listaProdutos[produtoIndex].quantidade = quantidadeNecessario;
+    localStorage.setItem('listaProdutos', JSON.stringify(listaProdutos));
   }
 
-  // Atualizar a lista de compras
-  const produto = listaCompras.find(produto => produto.codigo === codigo);
-  if (produto) {
-    produto.coletado = checkbox.checked;
-    produto.quantidadeComprado = parseInt(quantidadeCompradoTd.textContent);
-  } else {
-    listaCompras.push({
-      codigo,
-      coletado: checkbox.checked,
-      quantidadeComprado: parseInt(quantidadeCompradoTd.textContent)
-    });
-  }
+  nomeTd.textContent = nome;
+  unidadeTd.textContent = unidade;
+  quantidadeNecessarioTd.textContent = quantidadeNecessario;
 
-  // Atualizar a lista de compras no localStorage
+  tr.classList.remove('editing');
+  editarTd.style.display = '';
+  salvarTd.style.display = 'none';
+  excluirTd.style.display = '';
+
+  if (quantidadeComprado >= quantidadeNecessarioTd.textContent || tr.classList.contains('strikethrough')) {
+    produto.coletado = true;
+  } else {
+    produto.coletado = false;
+  }
   atualizarListaCompras();
+
+  renderizarTabela(); // Atualizar a tabela após salvar as alterações
+}
+
+// Função para excluir um produto
+function excluirProduto(produto, tr) {
+  if (confirm('Deseja excluir o produto?')) {
+    produto.ativo = false;
+    tr.remove();
+
+    // Atualizar a lista de compras removendo o produto
+    listaCompras = listaCompras.filter(p => p.codigo !== produto.codigo);
+    atualizarListaCompras();
+
+    // Remover o produto do localStorage
+    listaProdutos = listaProdutos.filter(p => p.codigo !== produto.codigo);
+    localStorage.setItem('listaProdutos', JSON.stringify(listaProdutos));
+  }
+}
+
+
+// Função auxiliar para criar um campo de input
+function criarInput(value) {
+  const input = document.createElement('input');
+  input.type = 'text';
+  input.value = value || '';
+  return input;
 }
 
 // Associar a função de marcarComoColetado aos eventos change dos checkboxes

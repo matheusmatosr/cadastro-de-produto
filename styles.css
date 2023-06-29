@@ -140,7 +140,7 @@ tr:hover {
 .titleLista{
   text-align: center;
   align-items: center;
-  margin-top: 110px;
+  margin-top: 80px;
   margin-bottom: 50px;
   margin-left: 500px;
   border: 1px solid black;
@@ -152,6 +152,9 @@ tr:hover {
 
 .listaTable{
   margin-bottom: 50px;
+  margin-left: 150px;
+  width: 80%;
+  text-align: center;
 }
 
 .irCadastro{
@@ -173,19 +176,29 @@ tr:hover {
 }
 
 .inicio{
-  margin-top: 150px;
+  margin-left: -20px;
   font-size: 30px;
+  background-color: #7f8380;
+  justify-content: space-between;
+  align-items: center;
+  width: 95.9%;
+  height: 60vh;
+  padding: 77px 50px 0 50px;
+  background: linear-gradient(146deg, rgb(112, 168, 219) 50%, rgb(182, 182, 182) 50%);
 }
 
 .titleInicio{
-  color: #928f8f;
-  text-shadow: rgb(12, 12, 12) 2.5px 2.5px;
+  color: #000000;
+  text-shadow: rgb(226, 226, 226) 2.5px 2.5px;
+  background-color: rgb(112, 168, 219);
   margin-left: 200px;
+  width: 550px;
 }
 
 .duplaInicio{
-  color: #8d8a96;
-  text-shadow: rgb(12, 12, 12) 2.5px 2.5px;
+  color: #202020;
+  text-shadow: rgb(255, 255, 255) 2.5px 2.5px;
+  background-color: rgb(182, 182, 182);
   margin-left: 900px;
   margin-top: -65px;
 }
@@ -194,13 +207,14 @@ tr:hover {
   margin-left: 950px;
   font-size: 27px;
   margin-bottom: 200px;
+  background-color: rgb(182, 182, 182);
 }
 
 .titleMenu{
   background-color: lightslategray;
   color: white;
   margin-left: 80px;
-  padding-top: 10px;
+  padding-top: 13px;
   font-size: 20px;
 }
 .menu{
@@ -268,6 +282,37 @@ tr:hover {
   font-size: 15px;
   background-color: #5148c7;
   color: #ddd;
+}
+
+.strikethrough {
+  text-decoration: line-through;
+}
+
+.editing input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.editing button {
+  pointer-events: none;
+}
+
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.button-container button {
+  padding: 5px 10px;
+  background-color: #333;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+.button-container button:hover {
+  background-color: #555;
 }
 
 @media screen and (max-width: 600px) {
