@@ -7,7 +7,7 @@ let listaCompras = JSON.parse(localStorage.getItem('listaCompras')) || [];
 // Função para atualizar a lista de compras no localStorage
 function atualizarListaCompras() {
   listaCompras = listaProdutos.filter(produto => {
-    return produto.quantidadeComprada >= produto.quantidadeNecessaria || produto.coletado;
+    return produto.quantidadeComprada >= produto.quantidadeNecessaria;
   });
 
   localStorage.setItem('listaCompras', JSON.stringify(listaCompras));
@@ -43,11 +43,16 @@ function renderizarTabela() {
     const coletadoTd = criarTd();
     if (quantidadeCompradoTd.textContent >= quantidadeNecessarioTd.textContent) {
       coletadoTd.textContent = 'Coletado';
-      tr.classList.add('strikethrough'); 
+      tr.classList.add('strikethrough');
+
+      // Adicionar o produto à lista de compras
+      listaCompras.push(produto);
+      localStorage.setItem('listaCompras', JSON.stringify(listaCompras));
     } else {
       coletadoTd.textContent = 'Não Coletado';
     }
     tr.appendChild(coletadoTd);
+
 
     const editarTd = criarTd();
     const editarButton = criarButton('Editar', editarProduto.bind(null, tr));
@@ -62,6 +67,7 @@ function renderizarTabela() {
 
     const excluirTd = criarTd();
     const excluirButton = criarButton('Excluir', excluirProduto.bind(null, produto, tr));
+    excluirButton.style.backgroundColor = 'red';
     excluirTd.appendChild(excluirButton);
     tr.appendChild(excluirTd);
 
@@ -179,7 +185,9 @@ function excluirProduto(produto, tr) {
 
     // Remover o produto do localStorage
     listaProdutos = listaProdutos.filter(p => p.codigo !== produto.codigo);
+    listaCompras = listaCompras.filter(p => p.codigo !== produto.codigo)
     localStorage.setItem('listaProdutos', JSON.stringify(listaProdutos));
+    localStorage.setItem('listaCompras', JSON.stringify(listaCompras));
   }
 }
 
