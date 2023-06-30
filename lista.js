@@ -203,7 +203,7 @@ function checkAllProdutosColetados() {
   });
 
   const botaoEnviar = document.querySelector('#botaoEnviar');
-  if (todosColetados) {
+  if (todosColetados && listaProdutos.length > 0) {
     botaoEnviar.style.display = ''; // Exibir o botão "Enviar Dados para o Servidor"
   } else {
     botaoEnviar.style.display = 'none'; // Ocultar o botão "Enviar Dados para o Servidor"
@@ -213,14 +213,25 @@ function checkAllProdutosColetados() {
 // Função para enviar os dados para o servidor
 function enviarDadosParaServidor() {
   const xhr = new XMLHttpRequest();
-  xhr.open('POST', 'https://649ed030245f077f3e9ceee9.mockapi.io/');
+  xhr.open('POST', 'https://649ed030245f077f3e9ceee9.mockapi.io/Compras');
   xhr.setRequestHeader('Content-Type', 'application/json');
   xhr.send(JSON.stringify(listaProdutos));
 
   xhr.onreadystatechange = function() {
-    if (xhr.readyState === XMLHttpRequest.DONE) {
+    if (xhr.readyState === 4) {
       if (xhr.status === 201) {
-        alert('Dados enviados com sucesso!');
+        alert('Dados enviados com sucesso para o servidor!');
+        // Limpar o localStorage
+        localStorage.removeItem('listaProdutos');
+        localStorage.removeItem('listaCompras');
+        // Limpar a tabela
+        const tableBody = document.querySelector('#listaTable tbody');
+        tableBody.innerHTML = '';
+        // Atualizar a lista de produtos
+        listaProdutos = [];
+        listaCompras = [];
+        // Renderizar a tabela vazia
+        renderizarTabela();
       } else {
         alert('Erro ao enviar os dados para o servidor.');
       }
