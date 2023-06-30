@@ -115,11 +115,6 @@ function editarProduto(tr) {
   quantidadeNecessarioTd.textContent = '';
   quantidadeNecessarioTd.appendChild(quantidadeNecessarioInput);
 
-  if (quantidadeNecessarioInput >= 2){
-    coletadoTd.textContent = 'Coletado';
-    tr.classList.add('strikethrough');
-  } 
-
   editarTd.style.display = 'none';
   salvarTd.style.display = '';
   excluirTd.style.display = 'none';
@@ -134,6 +129,8 @@ function salvarProduto(tr) {
   const nomeTd = tr.querySelector('td:nth-child(2)');
   const unidadeTd = tr.querySelector('td:nth-child(3)');
   const quantidadeNecessarioTd = tr.querySelector('td:nth-child(4)');
+  const quantidadeCompradoTd = tr.querySelector('td:nth-child(5)');
+  const coletadoTd = tr.querySelector('td:nth-child(6)');
 
   const codigo = parseInt(tr.getAttribute('data-codigo'));
   const nomeInput = nomeTd.querySelector('input');
@@ -148,27 +145,30 @@ function salvarProduto(tr) {
   if (produtoIndex !== -1) {
     listaProdutos[produtoIndex].nome = nome;
     listaProdutos[produtoIndex].unidade = unidade;
-    listaProdutos[produtoIndex].quantidade = quantidadeNecessario;
+    listaProdutos[produtoIndex].quantidadeNecessario = quantidadeNecessario;
   }
 
   nomeTd.textContent = nome;
   unidadeTd.textContent = unidade;
   quantidadeNecessarioTd.textContent = quantidadeNecessario;
 
-  tr.classList.remove('editing');
+  if (quantidadeCompradoTd.textContent >= quantidadeNecessarioTd.textContent) {
+    coletadoTd.textContent = 'Coletado';
+    tr.classList.add('strikethrough');    
+    // listaCompras.push(listaProdutos[produtoIndex]);
+    // atualizarListaCompras(); // Atualizar a lista de compras no localStorage
+  } else {
+    coletadoTd.textContent = 'Não Coletado';
+    tr.classList.remove('strikethrough');
+    // listaProdutos.push(listaProdutos[produtoIndex]);
+    // atualizarListaProdutos(); // Atualizar a lista de compras no localStorage
+  }
+
   editarTd.style.display = '';
   salvarTd.style.display = 'none';
   excluirTd.style.display = '';
 
-  if (quantidadeCompradoTd.textContent >= quantidadeNecessarioTd.textContent) {
-    produto.coletado = true;
-    listaCompras.push(produtoIndex);
-    atualizarListaCompras();
-  } else {
-    produto.coletado = false;
-    listaProdutos.push(produtoIndex);
-    atualizarListaProdutos();
-  }
+  atualizarListaProdutos(); // Atualizar a lista de produtos no localStorage
 
   renderizarTabela(); // Atualizar a tabela após salvar as alterações
 }
