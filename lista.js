@@ -6,10 +6,6 @@ let listaCompras = JSON.parse(localStorage.getItem('listaCompras')) || [];
 
 // Função para atualizar a lista de compras no localStorage
 function atualizarListaCompras() {
-  listaCompras = listaProdutos.filter(produto => {
-    return produto.quantidadeComprada >= produto.quantidadeNecessaria;
-  });
-
   localStorage.setItem('listaCompras', JSON.stringify(listaCompras));
 }
 
@@ -44,10 +40,6 @@ function renderizarTabela() {
     if (quantidadeCompradoTd.textContent >= quantidadeNecessarioTd.textContent) {
       coletadoTd.textContent = 'Coletado';
       tr.classList.add('strikethrough');
-
-      // Adicionar o produto à lista de compras
-      listaCompras.push(produto);
-      localStorage.setItem('listaCompras', JSON.stringify(listaCompras));
     } else {
       coletadoTd.textContent = 'Não Coletado';
     }
@@ -103,6 +95,7 @@ function editarProduto(tr) {
   const nomeTd = tr.querySelector('td:nth-child(2)');
   const unidadeTd = tr.querySelector('td:nth-child(3)');
   const quantidadeNecessarioTd = tr.querySelector('td:nth-child(4)');
+  const coletadoTd = tr.querySelector('td:nth-child(6)');
 
   const nomeInput = criarInput(nomeTd.textContent);
   nomeInput.style.width = nomeTd.clientWidth + 'px'; // Define a largura do input igual à largura da célula
@@ -121,6 +114,11 @@ function editarProduto(tr) {
 
   quantidadeNecessarioTd.textContent = '';
   quantidadeNecessarioTd.appendChild(quantidadeNecessarioInput);
+
+  if (quantidadeNecessarioInput >= 2){
+    coletadoTd.textContent = 'Coletado';
+    tr.classList.add('strikethrough');
+  } 
 
   editarTd.style.display = 'none';
   salvarTd.style.display = '';
@@ -151,7 +149,6 @@ function salvarProduto(tr) {
     listaProdutos[produtoIndex].nome = nome;
     listaProdutos[produtoIndex].unidade = unidade;
     listaProdutos[produtoIndex].quantidade = quantidadeNecessario;
-    localStorage.setItem('listaProdutos', JSON.stringify(listaProdutos));
   }
 
   nomeTd.textContent = nome;
@@ -163,12 +160,15 @@ function salvarProduto(tr) {
   salvarTd.style.display = 'none';
   excluirTd.style.display = '';
 
-  if (quantidadeComprado >= quantidadeNecessarioTd.textContent || tr.classList.contains('strikethrough')) {
+  if (quantidadeCompradoTd.textContent >= quantidadeNecessarioTd.textContent) {
     produto.coletado = true;
+    listaCompras.push(produtoIndex);
+    atualizarListaCompras();
   } else {
     produto.coletado = false;
+    listaProdutos.push(produtoIndex);
+    atualizarListaProdutos();
   }
-  atualizarListaCompras();
 
   renderizarTabela(); // Atualizar a tabela após salvar as alterações
 }
@@ -181,13 +181,11 @@ function excluirProduto(produto, tr) {
 
     // Atualizar a lista de compras removendo o produto
     listaCompras = listaCompras.filter(p => p.codigo !== produto.codigo);
-    atualizarListaCompras();
+    localStorage.setItem('listaCompras', JSON.stringify(listaCompras));
 
     // Remover o produto do localStorage
     listaProdutos = listaProdutos.filter(p => p.codigo !== produto.codigo);
-    listaCompras = listaCompras.filter(p => p.codigo !== produto.codigo)
     localStorage.setItem('listaProdutos', JSON.stringify(listaProdutos));
-    localStorage.setItem('listaCompras', JSON.stringify(listaCompras));
   }
 }
 

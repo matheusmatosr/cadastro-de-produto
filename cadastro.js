@@ -1,6 +1,14 @@
 // Verifica se há produtos cadastrados no localStorage
 let listaProdutos = JSON.parse(localStorage.getItem('listaProdutos')) || [];
 
+// Verifica se há lista de compras no localStorage
+let listaCompras = JSON.parse(localStorage.getItem('listaCompras')) || [];
+
+// Função para atualizar a lista de compras no localStorage
+function atualizarListaCompras() {
+  localStorage.setItem('listaCompras', JSON.stringify(listaCompras));
+}
+
 // Função para atualizar a lista de produtos no localStorage
 function atualizarListaProdutos() {
   localStorage.setItem('listaProdutos', JSON.stringify(listaProdutos));
@@ -31,6 +39,12 @@ function cadastrarProduto(event) {
 
   // Atualizar a lista de produtos no localStorage
   atualizarListaProdutos();
+
+  if (quantidade >= 2){
+    // Adicionar o produto à lista de compras
+    listaCompras.push(novoProduto);
+    atualizarListaCompras();
+  }
 
   // Limpar o formulário
   document.getElementById('codigo').value = '';
