@@ -14,6 +14,8 @@ function renderizarTabela() {
   const tableBody = document.querySelector('#listaTable tbody');
   tableBody.innerHTML = '';
 
+  let todosColetados = true; // Variável para verificar se todos os produtos estão coletados
+
   listaProdutos.forEach(produto => {
     // Verificar se o produto está ativo
     if (!produto.ativo) return;
@@ -42,9 +44,9 @@ function renderizarTabela() {
       tr.classList.add('strikethrough');
     } else {
       coletadoTd.textContent = 'Não Coletado';
+      todosColetados = false; // Atualiza a variável para indicar que nem todos os produtos estão coletados
     }
     tr.appendChild(coletadoTd);
-
 
     const editarTd = criarTd();
     const editarButton = criarButton('Editar', editarProduto.bind(null, tr));
@@ -65,6 +67,12 @@ function renderizarTabela() {
 
     tableBody.appendChild(tr);
   });
+
+  // Verifica se todos os produtos estão coletados para exibir o botão "Enviar Dados para o Servidor"
+  if (todosColetados) {
+    const botaoEnviar = document.querySelector('#botaoEnviar');
+    botaoEnviar.style.display = 'block';
+  }
 }
 
 // Função auxiliar para criar uma célula da tabela (td)
@@ -155,13 +163,11 @@ function salvarProduto(tr) {
   if (quantidadeCompradoTd.textContent >= quantidadeNecessarioTd.textContent) {
     coletadoTd.textContent = 'Coletado';
     tr.classList.add('strikethrough');    
-    // listaCompras.push(listaProdutos[produtoIndex]);
-    // atualizarListaCompras(); // Atualizar a lista de compras no localStorage
+    atualizarListaCompras();
+    checkAllProdutosColetados(); // Verificar se todos os produtos estão coletados
   } else {
     coletadoTd.textContent = 'Não Coletado';
     tr.classList.remove('strikethrough');
-    // listaProdutos.push(listaProdutos[produtoIndex]);
-    // atualizarListaProdutos(); // Atualizar a lista de compras no localStorage
   }
 
   editarTd.style.display = '';
@@ -169,7 +175,6 @@ function salvarProduto(tr) {
   excluirTd.style.display = '';
 
   atualizarListaProdutos(); // Atualizar a lista de produtos no localStorage
-
   renderizarTabela(); // Atualizar a tabela após salvar as alterações
 }
 
@@ -186,9 +191,42 @@ function excluirProduto(produto, tr) {
     // Remover o produto do localStorage
     listaProdutos = listaProdutos.filter(p => p.codigo !== produto.codigo);
     localStorage.setItem('listaProdutos', JSON.stringify(listaProdutos));
+
+    checkAllProdutosColetados(); // Verificar se todos os produtos estão coletados
   }
 }
 
+// Função para verificar se todos os produtos estão coletados
+function checkAllProdutosColetados() {
+  const todosColetados = listaProdutos.every(produto => {
+    return produto.quantidade >= 2;
+  });
+
+  const botaoEnviar = document.querySelector('#botaoEnviar');
+  if (todosColetados) {
+    botaoEnviar.style.display = ''; // Exibir o botão "Enviar Dados para o Servidor"
+  } else {
+    botaoEnviar.style.display = 'none'; // Ocultar o botão "Enviar Dados para o Servidor"
+  }
+}
+
+// Função para enviar os dados para o servidor
+function enviarDadosParaServidor() {
+  const xhr = new XMLHttpRequest();
+  xhr.open('POST', 'https://649ed030245f077f3e9ceee9.mockapi.io/');
+  xhr.setRequestHeader('Content-Type', 'application/json');
+  xhr.send(JSON.stringify(listaProdutos));
+
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState === XMLHttpRequest.DONE) {
+      if (xhr.status === 201) {
+        alert('Dados enviados com sucesso!');
+      } else {
+        alert('Erro ao enviar os dados para o servidor.');
+      }
+    }
+  };
+}
 
 // Função auxiliar para criar um campo de input
 function criarInput(value) {
@@ -206,3 +244,4 @@ checkboxes.forEach(checkbox => {
 
 // Inicializar a tabela de produtos
 renderizarTabela();
+checkAllProdutosColetados(); // Verificar se todos os produtos estão coletados

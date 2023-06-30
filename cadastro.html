@@ -7,10 +7,12 @@
   </head>
 
   <body>
+    <!-- Menu fixo -->
     <header class="menu">
       <h3 class="titleMenu">Tecnologia web</h3>
     </header>
     
+    <!-- Área inicial -->
     <section>
       <div class="inicio">
         <h1 class="titleInicio">Projeto Tecnologia Web</h1>
@@ -22,8 +24,10 @@
       </div>
     </section>
     
+    <!-- Área formulário -->
     <section>
       <h1 class="titleCadastro" id="cadastro">Cadastro de Produtos</h1>
+      <!-- Formulário -->
       <form id="cadastroForm" class="formCadastro">
         <label for="codigo">Código Produto:</label>
         <input type="number" id="codigo"><br>
@@ -49,12 +53,14 @@
         <label for="ativo">Ativo:</label>
         <input type="checkbox" id="ativo" checked><br>
 
+        <!-- Botões -->
         <input type="submit" value="Cadastrar" class="buttonCadastrar">
         <input type="button" value="Limpar" onclick="limparFormulario()" class="buttonLimpar">
         <a href="lista.html" class="irLista">Ir para a Lista</a>
       </form>
     </section>
 
+    <!-- Rodapé fixo -->
     <script src="cadastro.js"></script>
     <footer class="rodape">
       <div class="direitos">

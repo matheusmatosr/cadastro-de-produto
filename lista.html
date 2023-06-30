@@ -7,10 +7,12 @@
 </head>
 
 <body>
+  <!-- Menu fixo -->
   <header class="menu">
     <h3 class="titleMenu">Tecnologia Web</h3>
   </header>
   <h1 class="titleLista">Lista de Produtos</h1>
+  <!-- Tabela -->
   <table id="listaTable" class="listaTable">
     <thead>
       <tr>
@@ -24,7 +26,10 @@
     </thead>
     <tbody></tbody>
   </table>
+  <!-- Botões -->
   <a href="cadastro.html" class="irCadastro">Ir para Cadastro</a>
+  <button id="botaoEnviar" style="display: none;" class="buttonEnviarDados" onclick="enviarDadosParaServidor()">Enviar Dados para o Servidor</button>
+  <!-- Importação do código javascript -->
   <script src="lista.js"></script>
 </body>
 
